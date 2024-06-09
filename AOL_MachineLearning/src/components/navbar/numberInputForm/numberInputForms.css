@@ -1,0 +1,18 @@
+.number-input-form {
+  position: relative;
+  width: 100%;
+}
+
+.number-input-form .label {
+  margin-bottom: 8px;
+  color: rgb(48, 48, 48);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.number-input-form .input {
+  padding: 8px 10px;
+  width: 100%;
+  border-radius: 4px;
+  border: rgb(184, 184, 184) 1px solid;
+}

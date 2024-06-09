@@ -1,0 +1,38 @@
+.search-input-form {
+  position: relative;
+  width: 100%;
+}
+
+.search-input-form .label {
+  margin-bottom: 8px;
+  color: rgb(48, 48, 48);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.search-input-form .input {
+  padding: 8px 10px;
+  width: 100%;
+  border-radius: 4px;
+  border: rgb(184, 184, 184) 1px solid;
+}
+
+.search-input-form .input-item-container {
+  z-index: 1;
+  position: absolute;
+  width: 100%;
+  background-color: white;
+  border: rgb(184, 184, 184) 1px solid;
+  border-radius: 4px;
+  max-height: 200px;
+  overflow: auto;
+}
+
+.search-input-form .input-item {
+  width: 100%;
+  padding: 5px 10px;
+}
+
+.search-input-form .input-item:hover {
+  background-color: rgb(212, 212, 212);
+}

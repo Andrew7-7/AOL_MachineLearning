@@ -12,6 +12,7 @@ import {
 } from "./inputItems";
 import MapComponent from "../../components/navbar/map/map";
 import NumberInputForm from "../../components/navbar/numberInputForm/NumberInputForms";
+import axios from "axios";
 
 const HomePage = () => {
   const [formData, setFormData] = useState<{ [key: string]: string }>({
@@ -52,10 +53,10 @@ const HomePage = () => {
     [key: string]: string[];
   }>({
     district: district,
-    property_type: property_condition,
+    property_type: property_type,
     city: city,
     furnishing: furnishing,
-    property_condition: property_type,
+    property_condition: property_condition,
     certificate: certificate,
   });
 
@@ -89,12 +90,59 @@ const HomePage = () => {
   };
 
   const setValue = (name: string, value: string) => {
-    console.log("tes");
-
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
+  };
+
+  const handlePredict = async () => {
+    const {
+      district,
+      city,
+      furnishing,
+      property_condition,
+      certificate,
+      property_type,
+    } = formData;
+
+    const {
+      bedrooms,
+      bathrooms,
+      land_size_m2,
+      building_size_m2,
+      carports,
+      electricity,
+      maid_bedrooms,
+      maid_bathrooms,
+      floors,
+      garages,
+    } = numberFormData;
+
+    try {
+      const response = await axios.post("http://localhost:9999/predict", {
+        district,
+        city,
+        latitude,
+        longitude,
+        property_type,
+        bedrooms,
+        bathrooms,
+        land_size_m2,
+        building_size_m2,
+        carports,
+        electricity,
+        maid_bedrooms,
+        maid_bathrooms,
+        floors,
+        garages,
+        certificate,
+        property_condition,
+        furnishing,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -198,16 +246,6 @@ const HomePage = () => {
                   inputItems={filteredItems.furnishing}
                   setValue={setValue}
                 />
-                {/* bedrooms: "",
-    bathrooms: "",
-    land_size_m2: "",
-    building_size_m2: "",
-    carports: "",
-    electricity: "",
-    maid_bedrooms: "",
-    maid_bathrooms: "",
-    floors: "",
-    garages: "", */}
                 <NumberInputForm
                   label="Number of bedrooms"
                   name="bedrooms"
@@ -265,6 +303,9 @@ const HomePage = () => {
                   value={numberFormData.maid_bathrooms}
                 />
               </div>
+            </div>
+            <div className="predict-button" onClick={handlePredict}>
+              Predict
             </div>
           </div>
         </div>

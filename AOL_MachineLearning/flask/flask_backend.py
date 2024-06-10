@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify
 import pickle
 import io
 import numpy as np
+import pandas as pd
 
 with open('./RFHousePricingModel.h5', 'rb') as file:
     model = pickle.load(file)
@@ -14,26 +15,50 @@ CORS(app, resources={r"/predict": {"origins": "http://localhost:5173"}})
 @app.route('/predict', methods=['POST'])
 def predict():
   data = request.json
-  input_data = np.array([
-    data['district'], 
-    data['city'],
-    data['latitude'],
-    data['longitude'],
-    data['property_type'],
-    data['bedrooms'],
-    data['bathrooms'],
-    data['land_size_m2'],
-    data['building_size_m2'],
-    data['carports'],
-    data['electricity'],
-    data['maid_bedrooms'],
-    data['maid_bathrooms'],
-    data['floors'],
-    data['garages'],
-    data['certificate'],
-    data['property_condition'],
-    data['furnishing']
-  ])
+  # input_data = np.array([
+  #   data['district'], 
+  #   data['city'],
+  #   data['latitude'],
+  #   data['longitude'],
+  #   data['property_type'],
+  #   data['bedrooms'],
+  #   data['bathrooms'],
+  #   data['land_size_m2'],
+  #   data['building_size_m2'],
+  #   data['carports'],
+  #   data['electricity'],
+  #   data['maid_bedrooms'],
+  #   data['maid_bathrooms'],
+  #   data['floors'],
+  #   data['garages'],
+  #   data['certificate'],
+  #   data['property_condition'],
+  #   data['furnishing']
+  # ])
+
+  input_data = {
+    'district': [data['district']],
+    'city': [data['city']],
+    'latitude': [data['latitude']],
+    'longitude': [data['longitude']],
+    'property_type': [data['property_type']],
+    'bedrooms': [data['bedrooms']],
+    'bathrooms': [data['bathrooms']],
+    'land_size_m2': [data['land_size_m2']],
+    'building_size_m2': [data['building_size_m2']],
+    'carports': [data['carports']],
+    'electricity': [data['electricity']],
+    'maid_bedrooms': [data['maid_bedrooms']],
+    'maid_bathrooms': [data['maid_bathrooms']],
+    'floors': [data['floors']],
+    'garages': [data['garages']],
+    'certificate': [data['certificate']],
+    'property_condition': [data['property_condition']],
+    'furnishing': [data['furnishing']]
+  }
+
+  df = pd.DataFrame(input_data)
+
   print(input_data)
   try :
     print("tes")

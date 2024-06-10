@@ -13,6 +13,8 @@ import {
 import MapComponent from "../../components/navbar/map/map";
 import NumberInputForm from "../../components/navbar/numberInputForm/NumberInputForms";
 import axios from "axios";
+import { Bounce, ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const HomePage = () => {
 	const [formData, setFormData] = useState<{ [key: string]: string }>({
@@ -24,7 +26,9 @@ const HomePage = () => {
 		certificate: "",
 	});
 
-	const [numberFormData, setNumberFormData] = useState({
+	const [numberFormData, setNumberFormData] = useState<{
+		[key: string]: string;
+	}>({
 		bedrooms: "",
 		bathrooms: "",
 		land_size_m2: "",
@@ -90,6 +94,19 @@ const HomePage = () => {
 		}
 	};
 
+	const onError = (message: string) =>
+		toast.error(message, {
+			position: "bottom-center",
+			autoClose: 5000,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+			progress: undefined,
+			theme: "light",
+			transition: Bounce,
+		});
+
 	const setValue = (name: string, value: string) => {
 		setFormData((prevData) => ({
 			...prevData,
@@ -119,6 +136,25 @@ const HomePage = () => {
 			floors,
 			garages,
 		} = numberFormData;
+
+		for (const key in formData) {
+			if (formData[key] == "") {
+				onError("All field must be filled!");
+				return;
+			}
+		}
+
+		for (const key in numberFormData) {
+			if (numberFormData[key] == "") {
+				onError("All field must be filled!");
+				return;
+			}
+		}
+
+		if (latitude == 0 || longitude == 0) {
+			onError("All field must be filled!");
+			return;
+		}
 
 		try {
 			const response = await axios.post("http://localhost:9999/predict", {
@@ -161,6 +197,20 @@ const HomePage = () => {
 
 	return (
 		<>
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+				theme="light"
+				transition={Bounce}
+			/>
+			<ToastContainer />
 			<Navbar />
 			<div className="home-page">
 				<div className="page-center">
@@ -320,9 +370,9 @@ const HomePage = () => {
 						<div className="predict-button" onClick={handlePredict}>
 							Predict
 						</div>
-						{prediction && (
+						{prediction != 0 && (
 							<div className="prediction">
-								Predicted Price: Rp.{" "}
+								Predicted Price:{" "}
 								<b>
 									{prediction.toLocaleString("id-ID", {
 										style: "currency",

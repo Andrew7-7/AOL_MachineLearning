@@ -4,6 +4,8 @@ import pickle
 import io
 import numpy as np
 import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import MinMaxScaler
 
 with open('./RFHousePricingModel.h5', 'rb') as file:
     model = pickle.load(file)
@@ -39,8 +41,8 @@ def predict():
   input_data = {
     'district': [data['district']],
     'city': [data['city']],
-    'latitude': [data['latitude']],
-    'longitude': [data['longitude']],
+    'lat': [data['latitude']],
+    'long': [data['longitude']],
     'property_type': [data['property_type']],
     'bedrooms': [data['bedrooms']],
     'bathrooms': [data['bathrooms']],
@@ -59,11 +61,52 @@ def predict():
 
   df = pd.DataFrame(input_data)
 
-  print(input_data)
   try :
-    print("tes")
+    columns_to_convert = ['bedrooms', 'bathrooms', 'land_size_m2', 'building_size_m2', 'electricity', 'maid_bedrooms', 
+                      'maid_bathrooms', 'floors', 'garages', 'carports']
+  
+    for column in columns_to_convert:
+      df[column] = pd.to_numeric(df[column])
+
+    le = LabelEncoder()
+
+    df['district'] = le.fit_transform(df['district'])
+    df['city'] = le.fit_transform(df['city'])
+    df['property_type'] = le.fit_transform(df['property_type'])
+
+    mm = MinMaxScaler(feature_range=[0,1])
+
+    df['district'] = mm.fit_transform(df[['district']])
+    df['city'] = mm.fit_transform(df[['city']])
+    df['lat'] = mm.fit_transform(df[['lat']])
+    df['long'] = mm.fit_transform(df[['long']])
+    df['land_size_m2'] = mm.fit_transform(df[['land_size_m2']])
+    df['building_size_m2'] = mm.fit_transform(df[['building_size_m2']])
+    df['carports'] = mm.fit_transform(df[['carports']])
+    df['electricity'] = mm.fit_transform(df[['electricity']])
+    df['maid_bedrooms'] = mm.fit_transform(df[['maid_bedrooms']])
+    df['maid_bathrooms'] = mm.fit_transform(df[['maid_bathrooms']])
+    df['floors'] = mm.fit_transform(df[['floors']])
+    df['garages'] = mm.fit_transform(df[['garages']])
+    df['bedrooms'] = mm.fit_transform(df[['bedrooms']])
+    df['bathrooms'] = mm.fit_transform(df[['bathrooms']])
+
+    df['certificate'] = le.fit_transform(df['certificate'])
+    df['property_condition'] = le.fit_transform(df['property_condition'])
+    df['furnishing'] = le.fit_transform(df['furnishing'])
+
+    df['certificate'] = mm.fit_transform(df[['certificate']])
+    df['property_condition'] = mm.fit_transform(df[['property_condition']])
+    df['furnishing'] = mm.fit_transform(df[['furnishing']])
+
+    prediction = model.predict(df)
+
+    print("prediction", prediction)
+
+    return jsonify({'predictions': prediction.tolist()})
   
   except Exception as e:
+    print(e)
     return jsonify({'error': str(e)})
 
 if __name__ == '__main__':

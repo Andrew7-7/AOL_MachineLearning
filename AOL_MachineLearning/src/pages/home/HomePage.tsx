@@ -124,8 +124,8 @@ const HomePage = () => {
 			const response = await axios.post("http://localhost:9999/predict", {
 				district,
 				city,
-				latitude,
-				longitude,
+				lat: latitude,
+				long: longitude,
 				property_type,
 				bedrooms,
 				bathrooms,
@@ -237,6 +237,16 @@ const HomePage = () => {
 									type="text"
 									value={formData.property_type}
 									inputItems={filteredItems.property_type}
+									setValue={setValue}
+								/>
+								<SearchInputForm
+									label="Certificate"
+									name="certificate"
+									onChange={handleInputChange}
+									placeHolder="Insert certificate"
+									type="text"
+									value={formData.certificate}
+									inputItems={filteredItems.certificate}
 									setValue={setValue}
 								/>
 								<SearchInputForm
